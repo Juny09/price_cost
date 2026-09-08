@@ -1,13 +1,11 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, render_template
 from decoder import decode_code
 
 app = Flask(__name__)
 
-
 @app.route("/")
 def home():
-    return send_file("index.html")
-
+    return render_template("index.html")
 
 @app.route("/calculate", methods=["POST"])
 def calculate():
