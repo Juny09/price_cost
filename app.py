@@ -1,0 +1,35 @@
+from flask import Flask, request, jsonify, send_file
+from decoder import decode_code
+
+app = Flask(__name__)
+
+
+@app.route("/")
+def home():
+    return send_file("index.html")
+
+
+@app.route("/calculate", methods=["POST"])
+def calculate():
+
+    data = request.json
+
+    code = data["code"]
+    cost = data["cost"]
+    margin = data["margin"]
+
+    decoded = decode_code(code)
+
+    selling_price = cost / (1 - margin)
+
+    return jsonify({
+        "code": code,
+        "decoded": decoded,
+        "cost": cost,
+        "margin": margin,
+        "selling_price": round(selling_price, 2)
+    })
+
+
+if __name__ == "__main__":
+    app.run(debug=True)

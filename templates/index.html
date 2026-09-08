@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Price Chatbot</title>
+</head>
+
+<body>
+
+    <h2>Price Chatbot</h2>
+
+    <input id="code" placeholder="Enter code">
+
+    <input id="cost" type="number" placeholder="Cost">
+
+    <select id="margin">
+    <option value="0.30">30% Margin</option>
+    <option value="0.20">20% Margin</option>
+    <option value="0.15">15% Margin</option>
+</select>
+
+    <button onclick="calculate()">Calculate</button>
+
+    <pre id="result"></pre>
+
+    <script>
+        async function calculate() {
+
+            const code = document.getElementById("code").value;
+            const cost = document.getElementById("cost").value;
+            const margin = document.getElementById("margin").value;
+
+            const response = await fetch("/calculate", {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    code: code,
+                    cost: Number(cost),
+                    margin: Number(margin)
+                })
+            });
+
+            const data = await response.json();
+
+            document.getElementById("result").textContent =
+                JSON.stringify(data, null, 2);
+        }
+    </script>
+
+</body>
+
+</html>
