@@ -1,32 +1,59 @@
 MAPPING = {
-    "E": 1,
-    "S": 2,
-    "I": 3,
-    "N": 4,
-    "R": 5,
-    "A": 6,
-    "M": 7,
-    "P": 8,
-    "U": 9,
-    "T": 10,
-    "H": "百位标记",
-    "Y": "千位标记",
-    "X": "块位标记",
-    "0": None,
-    "O": None,
+"E": 1,
+"S": 2,
+"I": 3,
+"N": 4,
+"R": 5,
+"A": 6,
+"M": 7,
+"P": 8,
+"U": 9,
+"T": 10,
+"0": None,
+"O": None,
 }
 
-
 def decode_code(code):
-    code = code.upper()
+    """
+    Decode hidden price code.
 
-    result = []
+    ```
+    Examples:
+        ESH   -> 120
+        ESHYX -> 1200, unit = 块
+    """
+
+    code = code.upper().strip()
+
+    number = 0
+    unit = None
 
     for char in code:
-        if char in MAPPING:
-            value = MAPPING[char]
 
-            if value is not None:
-                result.append(value)
+        # Ignore 0 and O
+        if char in ("0", "O"):
+            continue
 
-    return result
+        # Hundreds marker
+        if char == "H":
+            number *= 10
+
+        # Thousands marker
+        elif char == "Y":
+            number *= 10
+
+        # Block/unit marker
+        elif char == "X":
+            unit = "块"
+
+        # Normal number
+        elif char in MAPPING:
+            number = number * 10 + MAPPING[char]
+
+        else:
+            raise ValueError(f"Invalid character: {char}")
+
+    return {
+        "value": number,
+        "unit": unit
+    }
